@@ -3,15 +3,31 @@ from google import genai
 import streamlit as st
 import sys
 import os
+
+# تنظیم انکودینگ سیستم روی UTF-8
 sys.stdout.reconfigure(encoding='utf-8')
 
 
-# خواندن ایمن کلید API از تنظیمات Streamlit (یا ورودی دستی برای تست محلی)
+# ۱. تنظیمات اولیه صفحه
+st.set_page_config(
+    page_title="دستیار هوشمند متن و فایل",
+    page_icon="✨",
+    layout="centered"
+)
+
+# ۲. تلاش برای خواندن کلید از اینترنت (Streamlit Cloud)
+MY_API_KEY = ""
 try:
     MY_API_KEY = st.secrets["GOOGLE_API_KEY"]
 except:
-    MY_API_KEY = ""  # اگر روی سیستم خودتان اجرا کنید و سیکرت ست نشده باشد
+    pass
 
+# ۳. اگر روی کامپیوتر شخصی هستید و کلید در Secrets نبود، در منوی سمت چپ کادر بگذار
+if not MY_API_KEY or MY_API_KEY == "کلید_API_خود_را_اینجا_بگذارید":
+    st.sidebar.markdown("---")
+    st.sidebar.subheader("⚙️ تنظیمات اتصال")
+    MY_API_KEY = st.sidebar.text_input(
+        "کلید Google API خود را اینجا وارد کنید:", type="password")
 
 # لیست مدل‌ها جهت بازخوانی خودکار در صورت ترافیک
 MODELS_TO_TRY = [
@@ -53,14 +69,7 @@ def generate_content_safe(client, prompt):
         "سرورهای گوگل در حال حاضر شلوغ هستند. لطفاً چند ثانیه دیگر مجدداً تلاش کنید.")
 
 
-# ۱. تنظیمات اولیه صفحه
-st.set_page_config(
-    page_title="دستیار هوشمند متن و فایل",
-    page_icon="✨",
-    layout="centered"
-)
-
-# ۲. استایل‌های CSS سفارشی
+# استایل‌های CSS سفارشی
 custom_css = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;800&display=swap');
@@ -158,9 +167,10 @@ if uploaded_file is not None:
 else:
     final_text = manual_text
 
-# بررسی کلید API
-if not MY_API_KEY or MY_API_KEY == "کلید_API_خود_را_اینجا_بگذارید":
-    st.error("⚠️ لطفاً کلید API واقعی خود را در خط ۱۲ فایل app.py قرار دهید!")
+# بررسی اینکه آیا کلید API وارد شده است یا خیر
+if not MY_API_KEY:
+    st.warning(
+        "👈 لطفاً کلید Google API خود را در منوی سمت چپ (Sidebar) وارد کنید تا برنامه فعال شود.")
 else:
     client = genai.Client(api_key=MY_API_KEY)
 
