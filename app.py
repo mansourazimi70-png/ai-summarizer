@@ -15,19 +15,8 @@ st.set_page_config(
     layout="centered"
 )
 
-# ۲. تلاش برای خواندن کلید از اینترنت (Streamlit Cloud)
-MY_API_KEY = ""
-try:
-    MY_API_KEY = st.secrets["GOOGLE_API_KEY"]
-except:
-    pass
-
-# ۳. اگر روی کامپیوتر شخصی هستید و کلید در Secrets نبود، در منوی سمت چپ کادر بگذار
-if not MY_API_KEY or MY_API_KEY == "کلید_API_خود_را_اینجا_بگذارید":
-    st.sidebar.markdown("---")
-    st.sidebar.subheader("⚙️ تنظیمات اتصال")
-    MY_API_KEY = st.sidebar.text_input(
-        "کلید Google API خود را اینجا وارد کنید:", type="password")
+# 🔑 کلید API خود را دقیقاً بین دو کوتیشن قرار دهید
+MY_API_KEY = "AQ.Ab8RN6L0Jk8IIZ6P3RHD2WVzymiaIxUBAcx9LWRAZB4GHRgd_w".strip()
 
 # لیست مدل‌ها جهت بازخوانی خودکار در صورت ترافیک
 MODELS_TO_TRY = [
